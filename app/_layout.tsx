@@ -3,6 +3,8 @@ import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import 'react-native-reanimated';
 import "@/globals.css";
+import { useEffect } from 'react';
+import { supabase } from '@/lib/supabase';
 
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
@@ -11,6 +13,16 @@ export const unstable_settings = {
 };
 
 export default function RootLayout() {
+    useEffect(() => {
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            console.log("🔥 existing session:", session?.user?.id ?? "none");
+            if (!session) {
+                supabase.auth.signInAnonymously().then(({ data, error }) => {
+                    console.log("🔥 anon sign-in result:", data?.user?.id, error);
+                });
+            }
+        });
+    }, []);
   const colorScheme = useColorScheme();
 
   return (
