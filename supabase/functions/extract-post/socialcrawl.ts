@@ -1,20 +1,29 @@
+
+const PLATFORM_ENDPOINTS: Record<string, string> = {
+    reddit: "reddit/post",
+    github: "github/repo",       // ← confirm
+    linkedin: "linkedin/post",   // ← confirm
+    x: "x/post",                 // ← confirm
+    youtube: "youtube/video",    // ← confirm
+    medium: "medium/post",       // ← confirm
+};
+
+
+
+
 export async function extractWithSocialCrawl(url: string, platform: string) {
+
+    // @ts-ignore
     const apiKey = Deno.env.get("SOCIALCRAWL_API_KEY");
     if (!apiKey) {
         throw new Error("SOCIALCRAWL_API_KEY is not set");
     }
 
-    const endpointMap: Record<string, string> = {
-        reddit: "reddit/post",
-        github: "github/post",     // adjust to SocialCrawl's real path
-        linkedin: "linkedin/post",
-        x: "x/post",
-        youtube: "youtube/post",
-    };
 
-    const path = endpointMap[platform];
+
+    const path = PLATFORM_ENDPOINTS[platform];
     if (!path) {
-        throw new Error(`SocialCrawl: unsupported platform "${platform}"`);
+        return { title: null, content: null, author: null };
     }
 
     const response = await fetch(
@@ -23,14 +32,14 @@ export async function extractWithSocialCrawl(url: string, platform: string) {
     );
 
     if (!response.ok) {
-        throw new Error(`SocialCrawl API request failed with status ${response.status}`);
+        throw new Error(`SocialCrawl request failed (${platform}): ${response.status}`);
     }
 
     const result = await response.json();
 
     return {
-        title: result.data?.post?.ext?.title ?? null,
-        content: result.data?.post?.ext?.selftext ?? null,
-        author: result.data?.post?.author?.username ?? null,
+        title: result.data?.post?.ext?.title ?? result.data?.title ?? null,
+        content: result.data?.post?.ext?.selftext ?? result.data?.description ?? null,
+        author: result.data?.post?.author?.username ?? result.data?.author ?? null,
     };
 }
