@@ -20,7 +20,7 @@ import {
     House,
     LucideIcon,
     Target,
-    UserRound,
+    User,
 } from "lucide-react-native";
 import type { BottomTabBarProps } from "@react-navigation/bottom-tabs";
 
@@ -33,7 +33,7 @@ const TAB_CONFIG: Record<string, { label: string; icon: LucideIcon }> = {
     index: { label: "Home", icon: House },
     goals: { label: "Goals", icon: Target },
     library: { label: "Library", icon: BookOpen },
-    profile: { label: "Profile", icon: UserRound },
+    profile: { label: "Profile", icon: User },
 };
 
 // The route rendered as the standalone contrasting circle.
