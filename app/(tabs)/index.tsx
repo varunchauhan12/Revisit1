@@ -1,5 +1,5 @@
-import { View, Text, ScrollView, Pressable } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { View, Text, ScrollView, Pressable, Platform } from "react-native";
+import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import {
     ContentCard,
@@ -9,11 +9,14 @@ import {
 } from "@/components/home";
 
 export default function HomeScreen() {
+    const insets = useSafeAreaInsets();
+    const bottomOffset = insets.bottom > 0 ? insets.bottom : 16;
+
     return (
         <SafeAreaView className="flex-1 bg-white" edges={["top"]}>
             <ScrollView
                 className="flex-1"
-                contentContainerClassName="pb-6"
+                contentContainerStyle={{ paddingBottom: bottomOffset + 160 }}
                 showsVerticalScrollIndicator={false}
             >
                 {/* Header */}
@@ -99,9 +102,38 @@ export default function HomeScreen() {
                 </View>
             </ScrollView>
 
-            {/* Search bar pinned above tab bar */}
-            <View className="px-5 pb-3 pt-2 bg-white border-t border-neutral-100">
-                <SearchBar />
+            {/* Floating search bar hovering above the floating tab navigation */}
+            <View
+                pointerEvents="box-none"
+                style={{
+                    position: "absolute",
+                    left: 0,
+                    right: 0,
+                    bottom: bottomOffset + 86,
+                    paddingHorizontal: 20,
+                    alignItems: "center",
+                }}
+            >
+                <View
+                    style={{
+                        width: "100%",
+                        maxWidth: 460,
+                        borderRadius: 999,
+                        backgroundColor: "#ffffff",
+                        ...Platform.select({
+                            ios: {
+                                shadowColor: "#000",
+                                shadowOffset: { width: 0, height: 8 },
+                                shadowOpacity: 0.12,
+                                shadowRadius: 20,
+                            },
+                            android: { elevation: 12 },
+                            default: {},
+                        }),
+                    }}
+                >
+                    <SearchBar />
+                </View>
             </View>
         </SafeAreaView>
     );
