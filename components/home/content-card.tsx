@@ -45,8 +45,11 @@ export function ContentCard({
         <Pressable
             onPress={onPress}
             disabled={!onPress}
-            style={width ? { width } : undefined}
-            className="bg-surface rounded-card border border-border p-5 shadow-sm"
+            style={[
+                width ? { width } : undefined,
+                { backgroundColor: config.soft },
+            ]}
+            className="rounded-card border border-border p-5 shadow-sm"
         >
             {/* Platform label + bookmark */}
             <View className="flex-row items-center justify-between mb-4">
@@ -83,9 +86,8 @@ export function ContentCard({
             {/* Why It Matters — subtle editorial insight block */}
             {whyItMatters && (
                 <View
-                    className="rounded-xl px-3.5 py-3 mb-3 border-l-2"
+                    className="bg-surface rounded-xl px-3.5 py-3 mb-3 border-l-2"
                     style={{
-                        backgroundColor: config.soft,
                         borderLeftColor: config.border,
                     }}
                 >
