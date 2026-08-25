@@ -2,18 +2,19 @@ import { View, Text, ScrollView, Pressable, Platform } from "react-native";
 import { SafeAreaView, useSafeAreaInsets } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import {
-    ContentCard,
     RevisitCard,
     EmergingFocusCard,
     SearchBar,
+    HorizontalContentCarousel,
 } from "@/components/home";
+import { MOCK_CONTENT_CARDS } from "@/components/home/content-card.mock";
 
 export default function HomeScreen() {
     const insets = useSafeAreaInsets();
     const bottomOffset = insets.bottom > 0 ? insets.bottom : 16;
 
     return (
-        <SafeAreaView className="flex-1 bg-white" edges={["top"]}>
+        <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
             <ScrollView
                 className="flex-1"
                 contentContainerStyle={{ paddingBottom: bottomOffset + 160 }}
@@ -21,16 +22,16 @@ export default function HomeScreen() {
             >
                 {/* Header */}
                 <View className="flex-row items-center justify-between px-5 pt-4 pb-4">
-                    <Text className="text-[28px] font-black text-black tracking-tight">
+                    <Text className="font-display text-display text-primary">
                         REVISIT
                     </Text>
                     <View className="flex-row items-center gap-4">
                         <Pressable>
-                            <Ionicons name="menu" size={24} color="#000" />
+                            <Ionicons name="menu" size={22} color="#171717" />
                         </Pressable>
-                        <View className="flex-row items-center bg-neutral-100 rounded-full px-3 py-1.5">
-                            <Text className="text-[13px]">🔥</Text>
-                            <Text className="text-[12px] font-semibold text-black ml-1">
+                        <View className="flex-row items-center bg-surface-muted rounded-pill px-3 py-1.5">
+                            <Text className="text-secondary text-[13px]">🔥</Text>
+                            <Text className="font-semibold text-secondary text-[12px] ml-1">
                                 5 Day Streak
                             </Text>
                         </View>
@@ -44,38 +45,28 @@ export default function HomeScreen() {
                     contentContainerClassName="px-5 gap-3 pb-2"
                     className="mb-4"
                 >
-                    <View className="bg-neutral-900 rounded-full px-4 py-2.5 flex-row items-center">
+                    <View className="bg-primary rounded-pill px-4 py-2.5 flex-row items-center">
                         <Text className="text-[13px] mr-1.5">🚀</Text>
-                        <Text className="text-white text-[13px] font-semibold">
+                        <Text className="font-semibold text-surface text-[13px]">
                             Build a startup
                         </Text>
                     </View>
-                    <View className="bg-neutral-100 rounded-full px-4 py-2.5 flex-row items-center border border-neutral-200">
+                    <View className="bg-surface rounded-pill px-4 py-2.5 flex-row items-center border border-border">
                         <Text className="text-[13px] mr-1.5">💻</Text>
-                        <Text className="text-black text-[13px] font-semibold">
+                        <Text className="font-semibold text-primary text-[13px]">
                             Learn programming
                         </Text>
                     </View>
                 </ScrollView>
 
                 {/* Section: For Your Goal */}
-                <View className="px-5">
-                    <Text className="text-[11px] font-semibold text-neutral-500 tracking-widest mb-3">
+                <View className="mb-1">
+                    <Text className="font-label text-label text-muted mb-3 px-5">
                         FOR YOUR GOAL: BUILD A STARTUP
                     </Text>
 
-                    {/* Content Card */}
-                    <ContentCard
-                        readingTime="5 MIN READ"
-                        source="linkedin.com"
-                        title="YC's Guide to Startup Pricing"
-                        whyItMatters={{
-                            label: "Why It Matters",
-                            description:
-                                "Directly addresses your pricing strategy for your SaaS project.",
-                        }}
-                        summary="A comprehensive overview of how early-stage companies should think..."
-                    />
+                    {/* Content Cards */}
+                    <HorizontalContentCarousel items={MOCK_CONTENT_CARDS} />
                 </View>
 
                 {/* Revisit Card */}
@@ -90,7 +81,7 @@ export default function HomeScreen() {
 
                 {/* Emerging Focus Section */}
                 <View className="px-5 mt-6">
-                    <Text className="text-[11px] font-semibold text-neutral-500 tracking-widest mb-3">
+                    <Text className="font-label text-label text-muted mb-3">
                         EMERGING FOCUS
                     </Text>
 
@@ -119,15 +110,15 @@ export default function HomeScreen() {
                         width: "100%",
                         maxWidth: 460,
                         borderRadius: 999,
-                        backgroundColor: "#ffffff",
+                        backgroundColor: "#FFFFFF",
                         ...Platform.select({
                             ios: {
-                                shadowColor: "#000",
-                                shadowOffset: { width: 0, height: 8 },
-                                shadowOpacity: 0.12,
-                                shadowRadius: 20,
+                                shadowColor: "#171717",
+                                shadowOffset: { width: 0, height: 6 },
+                                shadowOpacity: 0.06,
+                                shadowRadius: 16,
                             },
-                            android: { elevation: 12 },
+                            android: { elevation: 6 },
                             default: {},
                         }),
                     }}

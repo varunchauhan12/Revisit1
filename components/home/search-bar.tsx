@@ -13,13 +13,13 @@ export function SearchBar({
     return (
         <Pressable
             onPress={onPress}
-            className="flex-row items-center bg-white border border-neutral-200 rounded-full px-4 py-3.5"
+            className="flex-row items-center bg-surface border border-border rounded-pill px-4 py-3.5"
         >
-            <Ionicons name="search" size={18} color="#9ca3af" />
-            <Text className="flex-1 ml-3 text-[15px] text-neutral-400">
+            <Ionicons name="search" size={18} color="#999994" />
+            <Text className="flex-1 ml-3 font-body text-body text-muted">
                 {placeholder}
             </Text>
-            <Ionicons name="mic-outline" size={18} color="#9ca3af" />
+            <Ionicons name="mic-outline" size={18} color="#999994" />
         </Pressable>
     );
 }

@@ -17,23 +17,23 @@ export function RevisitCard({
     onReadAgain,
 }: RevisitCardProps) {
     return (
-        <View className="bg-white rounded-2xl border border-neutral-100 p-5 shadow-sm">
+        <View className="bg-surface rounded-card border border-border p-5 shadow-sm">
             {/* Time badge */}
             <View className="flex-row items-center mb-3">
-                <Ionicons name="time-outline" size={14} color="#6b7280" />
-                <Text className="text-[12px] text-neutral-500 ml-1.5">
+                <Ionicons name="time-outline" size={14} color="#6F6F6A" />
+                <Text className="text-secondary text-secondary ml-1.5">
                     From {timeAgo} — worth a re-read
                 </Text>
             </View>
 
             {/* Title */}
-            <Text className="text-[22px] font-bold text-black leading-7 mb-2">
+            <Text className="font-heading text-heading text-primary leading-7 mb-2">
                 {title}
             </Text>
 
             {/* Summary */}
             <Text
-                className="text-[15px] text-neutral-500 leading-5 mb-4"
+                className="font-body text-body text-secondary leading-5 mb-4"
                 numberOfLines={2}
             >
                 {summary}
@@ -41,14 +41,14 @@ export function RevisitCard({
 
             {/* Bottom row: source + read again */}
             <View className="flex-row items-center justify-between">
-                <Text className="text-[12px] text-neutral-400">
+                <Text className="text-muted text-secondary">
                     {source}
                 </Text>
                 <Pressable
                     onPress={onReadAgain}
                     className="flex-row items-center"
                 >
-                    <Text className="text-[12px] font-bold text-black tracking-wide">
+                    <Text className="font-semibold text-secondary text-primary">
                         READ AGAIN →
                     </Text>
                 </Pressable>

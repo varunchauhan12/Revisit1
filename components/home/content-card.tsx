@@ -1,64 +1,101 @@
 import { View, Text, Pressable } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { ContentPlatform, getPlatformConfig } from "./content-platforms";
 
-export type ContentCardProps = {
-    readingTime: string;
-    source: string;
+export type ContentItem = {
+    id?: string;
+    platform?: ContentPlatform;
+    /** @deprecated use `platform` instead. Kept for legacy callers. */
+    source?: string;
     title: string;
     whyItMatters?: {
         label: string;
         description: string;
     };
     summary: string;
+    readingTime?: string;
+};
+
+export type ContentCardProps = ContentItem & {
+    /** Optional explicit width, used when rendered inside a carousel. */
+    width?: number;
+    /** Called when the card itself is pressed (e.g. to open the article). */
+    onPress?: () => void;
+    /** Called when the bookmark icon is pressed. */
+    onBookmarkPress?: () => void;
+    /** @deprecated use `onBookmarkPress` instead. Kept for legacy callers. */
     onBookmark?: () => void;
 };
 
 export function ContentCard({
-    readingTime,
-    source,
+    platform = "web",
     title,
     whyItMatters,
     summary,
+    readingTime,
+    width,
+    onPress,
+    onBookmarkPress,
     onBookmark,
 }: ContentCardProps) {
+    const config = getPlatformConfig(platform);
+    const handleBookmarkPress = onBookmarkPress ?? onBookmark;
+
     return (
-        <View className="bg-white rounded-2xl border border-neutral-100 p-5 shadow-sm">
-            {/* Top row: reading time + source + bookmark */}
-            <View className="flex-row items-center justify-between mb-3">
-                <View className="bg-neutral-900 rounded-full px-3 py-1">
-                    <Text className="text-white text-[11px] font-semibold tracking-wide">
-                        {readingTime}
+        <Pressable
+            onPress={onPress}
+            disabled={!onPress}
+            style={width ? { width } : undefined}
+            className="bg-surface rounded-card border border-border p-5 shadow-sm"
+        >
+            {/* Platform label + bookmark */}
+            <View className="flex-row items-center justify-between mb-4">
+                <View className="flex-row items-center gap-1.5">
+                    <Ionicons
+                        name={config.icon}
+                        size={13}
+                        color={config.primary}
+                    />
+                    <Text
+                        className="font-label text-label"
+                        style={{ color: config.primary }}
+                    >
+                        {config.label.toUpperCase()}
                     </Text>
                 </View>
-                <View className="flex-row items-center gap-2">
-                    <Text className="text-neutral-400 text-[12px]">
-                        {source}
-                    </Text>
-                    <Pressable onPress={onBookmark} hitSlop={8}>
-                        <Ionicons
-                            name="bookmark-outline"
-                            size={18}
-                            color="#9ca3af"
-                        />
-                    </Pressable>
-                </View>
+                <Pressable onPress={handleBookmarkPress} hitSlop={8}>
+                    <Ionicons
+                        name="bookmark-outline"
+                        size={18}
+                        color="#999994"
+                    />
+                </Pressable>
             </View>
 
             {/* Title */}
-            <Text className="text-[22px] font-bold text-black leading-7 mb-3">
+            <Text
+                className="font-heading text-heading text-primary leading-7 mb-3"
+                numberOfLines={3}
+            >
                 {title}
             </Text>
 
-            {/* Why It Matters section */}
+            {/* Why It Matters — subtle editorial insight block */}
             {whyItMatters && (
-                <View className="bg-neutral-50 rounded-xl p-3.5 mb-3 border-l-[3px] border-l-neutral-800">
-                    <View className="flex-row items-center mb-1">
-                        <View className="w-2.5 h-2.5 rounded-full bg-neutral-800 mr-2" />
-                        <Text className="text-[13px] font-bold text-black">
-                            {whyItMatters.label}
-                        </Text>
-                    </View>
-                    <Text className="text-[13px] text-neutral-600 leading-[18px] ml-[18px]">
+                <View
+                    className="rounded-xl px-3.5 py-3 mb-3 border-l-2"
+                    style={{
+                        backgroundColor: config.soft,
+                        borderLeftColor: config.border,
+                    }}
+                >
+                    <Text
+                        className="font-label text-label mb-1"
+                        style={{ color: config.primary }}
+                    >
+                        WHY IT MATTERS
+                    </Text>
+                    <Text className="font-body text-secondary text-secondary leading-[18px]">
                         {whyItMatters.description}
                     </Text>
                 </View>
@@ -66,11 +103,30 @@ export function ContentCard({
 
             {/* Summary */}
             <Text
-                className="text-[15px] text-neutral-500 leading-5"
-                numberOfLines={2}
+                className="font-body text-body text-secondary leading-5 mb-4"
+                numberOfLines={3}
             >
                 {summary}
             </Text>
-        </View>
+
+            {/* Reading time + Read action */}
+            <View className="flex-row items-center justify-between">
+                {readingTime ? (
+                    <Text className="font-body text-secondary text-muted">
+                        {readingTime}
+                    </Text>
+                ) : (
+                    <View />
+                )}
+                <Pressable onPress={onPress} hitSlop={8}>
+                    <Text
+                        className="font-medium text-secondary"
+                        style={{ color: config.primary }}
+                    >
+                        Read →
+                    </Text>
+                </Pressable>
+            </View>
+        </Pressable>
     );
 }
