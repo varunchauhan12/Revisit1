@@ -13,7 +13,7 @@ export function SearchBar({
     return (
         <Pressable
             onPress={onPress}
-            className="flex-row items-center bg-surface border border-border rounded-pill px-4 py-3.5"
+            className="flex-row items-center bg-surface border border-border rounded-2xl px-4 py-2.5"
         >
             <Ionicons name="search" size={18} color="#999994" />
             <Text className="flex-1 ml-3 font-body text-body text-muted">

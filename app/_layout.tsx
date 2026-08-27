@@ -1,8 +1,4 @@
-import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from "@react-navigation/native";
+import { ThemeProvider, Theme } from "@react-navigation/native";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import "react-native-reanimated";
@@ -17,15 +13,35 @@ import {
   PlusJakartaSans_800ExtraBold,
 } from "@expo-google-fonts/plus-jakarta-sans";
 
-import { useColorScheme } from "@/hooks/use-color-scheme";
+import { Colors } from "@/constants/colors";
 
 export const unstable_settings = {
   anchor: "(tabs)",
 };
 
-export default function RootLayout() {
-  const colorScheme = useColorScheme();
+/**
+ * Custom navigation theme aligned to our warm, premium design system.
+ * All screens get the off-white background and warm text colors by default.
+ */
+const RevisitTheme: Theme = {
+  dark: false,
+  colors: {
+    primary: Colors.accent,
+    background: Colors.background,
+    card: Colors.surface,
+    text: Colors.textPrimary,
+    border: Colors.border,
+    notification: Colors.accent,
+  },
+  fonts: {
+    regular: { fontFamily: "PlusJakartaSans_400Regular", fontWeight: "400" },
+    medium: { fontFamily: "PlusJakartaSans_500Medium", fontWeight: "500" },
+    bold: { fontFamily: "PlusJakartaSans_700Bold", fontWeight: "700" },
+    heavy: { fontFamily: "PlusJakartaSans_800ExtraBold", fontWeight: "800" },
+  },
+};
 
+export default function RootLayout() {
   const [fontsLoaded] = useFonts({
     PlusJakartaSans_400Regular,
     PlusJakartaSans_500Medium,
@@ -39,7 +55,7 @@ export default function RootLayout() {
   }
 
   return (
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+    <ThemeProvider value={RevisitTheme}>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
 
@@ -48,6 +64,8 @@ export default function RootLayout() {
           options={{
             presentation: "modal",
             title: "Modal",
+            headerStyle: { backgroundColor: Colors.surface },
+            headerTintColor: Colors.textPrimary,
           }}
         />
 
@@ -59,9 +77,17 @@ export default function RootLayout() {
             animation: "slide_from_bottom",
           }}
         />
+
+        <Stack.Screen
+          name="post/[id]"
+          options={{
+            headerShown: false,
+            animation: "slide_from_right",
+          }}
+        />
       </Stack>
 
-      <StatusBar style="auto" />
+      <StatusBar style="dark" />
     </ThemeProvider>
   );
 }

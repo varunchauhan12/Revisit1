@@ -3,6 +3,7 @@ import {
   SafeAreaView,
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
+import { useRouter } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import {
   RevisitCard,
@@ -10,11 +11,14 @@ import {
   SearchBar,
   HorizontalContentCarousel,
 } from "@/components/home";
-import { MOCK_CONTENT_CARDS } from "@/components/home/content-card.mock";
+import { getHomeCarouselItems } from "@/data/mockPosts";
 
 // Mock data for the header greeting — replace with real user/streak data later.
 const MOCK_USER_NAME = "Varun";
 const MOCK_STREAK_DAYS = 5;
+
+// Home content cards derived from the shared mock post data.
+const HOME_CARDS = getHomeCarouselItems();
 
 function getGreeting() {
   const hour = new Date().getHours();
@@ -25,6 +29,7 @@ function getGreeting() {
 
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();
+  const router = useRouter();
   const bottomOffset = insets.bottom > 0 ? insets.bottom : 16;
 
   return (
@@ -79,7 +84,12 @@ export default function HomeScreen() {
           </Text>
 
           {/* Content Cards */}
-          <HorizontalContentCarousel items={MOCK_CONTENT_CARDS} />
+          <HorizontalContentCarousel
+            items={HOME_CARDS}
+            onItemPress={(item) => {
+              if (item.id) router.push(`/post/${item.id}`);
+            }}
+          />
         </View>
 
         {/* Revisit Card */}
@@ -89,6 +99,7 @@ export default function HomeScreen() {
             title="How to Find Your First 100 Users"
             summary="Doing things that don't scale is the only way to get your initial traction. This..."
             source="paulgraham.com"
+            onReadAgain={() => router.push("/post/revisit-first-100-users")}
           />
         </View>
 

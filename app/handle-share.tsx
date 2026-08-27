@@ -83,10 +83,24 @@ export default function HandleShare() {
                 body: { url, platform, userId: user.id },
             });
 
-            console.log("🔥 Edge Function response:", data);
+            console.log("🔥 Edge Function response:", JSON.stringify(data));
 
-            if (error || !data?.save) {
-                console.error("🔥 Edge Function error:", error);
+            if (error) {
+                // Try to read the response body for the actual error message
+                let errorBody = null;
+                if (error.context && typeof error.context.json === "function") {
+                    try {
+                        errorBody = await error.context.json();
+                    } catch {}
+                }
+                console.error("🔥 Edge Function error:", error.message);
+                console.error("🔥 Edge Function error body:", JSON.stringify(errorBody));
+                setStatus("error");
+                return;
+            }
+
+            if (!data?.save) {
+                console.error("🔥 Edge Function returned no save data:", JSON.stringify(data));
                 setStatus("error");
                 return;
             }

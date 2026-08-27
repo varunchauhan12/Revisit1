@@ -23,11 +23,11 @@ import {
     User,
 } from "lucide-react-native";
 import type { BottomTabBarProps } from "@react-navigation/bottom-tabs";
+import { Colors } from "@/constants/colors";
 
 /**
  * Visual configuration for each tab, keyed by the file-based route name
- * inside the `(tabs)` group. `profile` is intentionally split out into a
- * separate, contrasting circular button (see PROFILE_ROUTE below).
+ * inside the `(tabs)` group.
  */
 const TAB_CONFIG: Record<string, { label: string; icon: LucideIcon }> = {
     index: { label: "Home", icon: House },
@@ -41,19 +41,19 @@ const PROFILE_ROUTE = "profile";
 // Routes rendered inside the main white pill, in order.
 const MAIN_ROUTES = ["index", "goals", "library"];
 
-const ACTIVE_COLOR = "#0a0a0a";
-const INACTIVE_COLOR = "#9ca3af";
+const ACTIVE_COLOR = Colors.textPrimary;
+const INACTIVE_COLOR = Colors.textMuted;
 
-const CONTAINER_PADDING = 6;
-const CIRCLE_SIZE = 62;
+const CONTAINER_PADDING = 4;
+const CIRCLE_SIZE = 48;
 
 const SPRING = { damping: 18, stiffness: 190, mass: 0.9 };
 
 const shadow: ViewStyle = Platform.select({
     ios: {
-        shadowColor: "#000",
+        shadowColor: Colors.textPrimary,
         shadowOffset: { width: 0, height: 8 },
-        shadowOpacity: 0.12,
+        shadowOpacity: 0.08,
         shadowRadius: 20,
     },
     android: { elevation: 12 },
@@ -106,12 +106,12 @@ function TabItem({
             onPress={onPress}
             onLongPress={onLongPress}
             style={{ width }}
-            className="items-center justify-center py-2.5"
+            className="items-center justify-center py-1.5"
             hitSlop={8}
         >
             <Animated.View style={iconStyle}>
                 <Icon
-                    size={24}
+                    size={20}
                     color={focused ? ACTIVE_COLOR : INACTIVE_COLOR}
                     strokeWidth={focused ? 2.4 : 2}
                 />
@@ -121,9 +121,9 @@ function TabItem({
                     labelStyle,
                     {
                         color: focused ? ACTIVE_COLOR : INACTIVE_COLOR,
-                        fontSize: 11,
+                        fontSize: 10,
                         fontWeight: focused ? "700" : "500",
-                        marginTop: 4,
+                        marginTop: 2,
                     },
                 ]}
                 numberOfLines={1}
@@ -163,8 +163,6 @@ function ProfileButton({
         transform: [{ scale: interpolate(progress.value, [0, 1], [1, 1.06]) }],
     }));
 
-    // Active: pure black circle + white icon. Inactive: same dark circle so it
-    // always contrasts the white pill, with a slightly dimmed icon.
     return (
         <Pressable
             accessibilityRole="button"
@@ -180,7 +178,7 @@ function ProfileButton({
                         width: CIRCLE_SIZE,
                         height: CIRCLE_SIZE,
                         borderRadius: CIRCLE_SIZE / 2,
-                        backgroundColor: ACTIVE_COLOR,
+                        backgroundColor: Colors.textPrimary,
                         alignItems: "center",
                         justifyContent: "center",
                     },
@@ -189,8 +187,8 @@ function ProfileButton({
                 ]}
             >
                 <Icon
-                    size={24}
-                    color="#ffffff"
+                    size={20}
+                    color={Colors.surface}
                     strokeWidth={focused ? 2.4 : 2}
                     opacity={focused ? 1 : 0.75}
                 />
@@ -294,8 +292,8 @@ export function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
                     style={[
                         {
                             flex: 1,
-                            backgroundColor: "#ffffff",
-                            borderRadius: 999,
+                            backgroundColor: Colors.surface,
+                            borderRadius: 24,
                             padding: CONTAINER_PADDING,
                         },
                         shadow,
@@ -315,8 +313,8 @@ export function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
                                         top: 0,
                                         bottom: 0,
                                         left: 0,
-                                        borderRadius: 999,
-                                        backgroundColor: "#f2f2f2",
+                                        borderRadius: 20,
+                                        backgroundColor: Colors.surfaceMuted,
                                     },
                                     pillStyle,
                                 ]}

@@ -9,6 +9,28 @@ const PLATFORM_ENDPOINTS: Record<string, string> = {
 };
 
 
+/**
+ * Follow redirects to resolve shortened/share URLs to their final canonical URL.
+ * e.g. reddit.com/r/sub/s/abc123 → reddit.com/r/sub/comments/id/title/
+ */
+async function resolveUrl(url: string): Promise<string> {
+    try {
+        const response = await fetch(url, { method: "HEAD", redirect: "follow" });
+        // The final URL after all redirects
+        return response.url || url;
+    } catch {
+        // If HEAD fails, try GET
+        try {
+            const response = await fetch(url, { redirect: "follow" });
+            const finalUrl = response.url || url;
+            // Consume body to avoid leaks
+            await response.text().catch(() => {});
+            return finalUrl;
+        } catch {
+            return url;
+        }
+    }
+}
 
 
 export async function extractWithSocialCrawl(url: string, platform: string) {
@@ -26,13 +48,19 @@ export async function extractWithSocialCrawl(url: string, platform: string) {
         return { title: null, content: null, author: null };
     }
 
+    // Resolve shortened/share redirect URLs to their canonical form
+    const resolvedUrl = await resolveUrl(url);
+    console.log(`[extract] Resolved URL: ${url} → ${resolvedUrl}`);
+
     const response = await fetch(
-        `https://www.socialcrawl.dev/v1/${path}?url=${encodeURIComponent(url)}`,
+        `https://www.socialcrawl.dev/v1/${path}?url=${encodeURIComponent(resolvedUrl)}`,
         { headers: { "x-api-key": apiKey } }
     );
 
     if (!response.ok) {
-        throw new Error(`SocialCrawl request failed (${platform}): ${response.status}`);
+        const body = await response.text();
+        console.error(`[extract] SocialCrawl error: ${response.status} ${body}`);
+        throw new Error(`SocialCrawl request failed (${platform}): ${response.status} - ${body}`);
     }
 
     const result = await response.json();

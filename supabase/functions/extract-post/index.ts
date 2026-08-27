@@ -42,7 +42,12 @@ Deno.serve(async (req: any) => {
         if (preExtractedData) {
             extracted = preExtractedData;
         } else {
-            extracted = await extractWithSocialCrawl(url , platform);
+            try {
+                extracted = await extractWithSocialCrawl(url, platform);
+            } catch (extractionErr) {
+                console.error("extract-post: extraction failed, saving URL anyway:", extractionErr);
+                extracted = { title: null, content: null, author: null };
+            }
         }
 
 

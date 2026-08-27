@@ -1,6 +1,7 @@
 import { View, Text, ScrollView, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { BookOpen, Search, Bookmark } from "lucide-react-native";
+import { Colors } from "@/constants/colors";
 
 const COLLECTIONS = [
     { emoji: "🚀", title: "Startup", count: 24 },
@@ -29,7 +30,7 @@ const RECENT_SAVES = [
 
 export default function LibraryScreen() {
     return (
-        <SafeAreaView className="flex-1 bg-white" edges={["top"]}>
+        <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
             <ScrollView
                 className="flex-1"
                 contentContainerClassName="pb-32"
@@ -37,30 +38,30 @@ export default function LibraryScreen() {
             >
                 {/* Header */}
                 <View className="flex-row items-center justify-between px-5 pt-4 pb-4">
-                    <Text className="text-[28px] font-black text-black tracking-tight">
+                    <Text className="font-display text-display text-primary">
                         Library
                     </Text>
-                    <Pressable className="h-10 w-10 items-center justify-center rounded-full bg-neutral-100">
-                        <Search size={20} color="#000" />
+                    <Pressable className="h-10 w-10 items-center justify-center rounded-full bg-surface-muted">
+                        <Search size={20} color={Colors.textPrimary} />
                     </Pressable>
                 </View>
 
                 {/* Collections */}
                 <View className="px-5">
-                    <Text className="mb-3 text-[11px] font-semibold tracking-widest text-neutral-500">
+                    <Text className="font-label text-label text-muted mb-3">
                         COLLECTIONS
                     </Text>
                     <View className="flex-row flex-wrap justify-between">
                         {COLLECTIONS.map((c) => (
                             <View
                                 key={c.title}
-                                className="mb-3 w-[48%] rounded-2xl border border-neutral-200 bg-neutral-50 p-4"
+                                className="mb-3 w-[48%] rounded-card border border-border bg-surface-muted p-4"
                             >
                                 <Text className="text-[22px]">{c.emoji}</Text>
-                                <Text className="mt-2 text-[15px] font-semibold text-black">
+                                <Text className="mt-2 font-semibold text-body text-primary">
                                     {c.title}
                                 </Text>
-                                <Text className="mt-0.5 text-[12px] text-neutral-500">
+                                <Text className="mt-0.5 text-secondary text-muted">
                                     {c.count} saved
                                 </Text>
                             </View>
@@ -70,25 +71,25 @@ export default function LibraryScreen() {
 
                 {/* Recent saves */}
                 <View className="mt-4 px-5">
-                    <Text className="mb-3 text-[11px] font-semibold tracking-widest text-neutral-500">
+                    <Text className="font-label text-label text-muted mb-3">
                         RECENTLY SAVED
                     </Text>
                     {RECENT_SAVES.map((item) => (
                         <View
                             key={item.title}
-                            className="mb-3 flex-row items-center rounded-2xl border border-neutral-200 bg-white p-4"
+                            className="mb-3 flex-row items-center rounded-card border border-border bg-surface p-4"
                         >
-                            <View className="mr-3 h-10 w-10 items-center justify-center rounded-full bg-neutral-100">
-                                <Bookmark size={18} color="#000" />
+                            <View className="mr-3 h-10 w-10 items-center justify-center rounded-full bg-surface-muted">
+                                <Bookmark size={18} color={Colors.textPrimary} />
                             </View>
                             <View className="flex-1">
                                 <Text
-                                    className="text-[14px] font-semibold text-black"
+                                    className="font-semibold text-[14px] text-primary"
                                     numberOfLines={2}
                                 >
                                     {item.title}
                                 </Text>
-                                <Text className="mt-0.5 text-[12px] text-neutral-500">
+                                <Text className="mt-0.5 text-secondary text-muted">
                                     {item.source} · {item.time}
                                 </Text>
                             </View>
@@ -98,8 +99,8 @@ export default function LibraryScreen() {
 
                 {/* Empty-ish hint */}
                 <View className="mt-2 flex-row items-center justify-center px-5">
-                    <BookOpen size={14} color="#9ca3af" />
-                    <Text className="ml-2 text-[12px] text-neutral-400">
+                    <BookOpen size={14} color={Colors.textMuted} />
+                    <Text className="ml-2 text-secondary text-muted">
                         Everything you save lives here
                     </Text>
                 </View>

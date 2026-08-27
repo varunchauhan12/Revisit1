@@ -8,6 +8,7 @@ import {
     Target,
     ChevronRight,
 } from "lucide-react-native";
+import { Colors } from "@/constants/colors";
 
 const STATS = [
     { icon: Bookmark, label: "Saved", value: "128" },
@@ -22,7 +23,7 @@ const MENU = [
 
 export default function ProfileScreen() {
     return (
-        <SafeAreaView className="flex-1 bg-white" edges={["top"]}>
+        <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
             <ScrollView
                 className="flex-1"
                 contentContainerClassName="pb-32"
@@ -30,31 +31,31 @@ export default function ProfileScreen() {
             >
                 {/* Header */}
                 <View className="flex-row items-center justify-between px-5 pt-4 pb-4">
-                    <Text className="text-[28px] font-black text-black tracking-tight">
+                    <Text className="font-display text-display text-primary">
                         Profile
                     </Text>
-                    <Pressable className="h-10 w-10 items-center justify-center rounded-full bg-neutral-100">
-                        <Settings size={20} color="#000" />
+                    <Pressable className="h-10 w-10 items-center justify-center rounded-full bg-surface-muted">
+                        <Settings size={20} color={Colors.textPrimary} />
                     </Pressable>
                 </View>
 
                 {/* Identity */}
                 <View className="items-center px-5 pt-2 pb-6">
-                    <View className="h-20 w-20 items-center justify-center rounded-full bg-neutral-900">
-                        <Text className="text-[28px] font-black text-white">
+                    <View className="h-20 w-20 items-center justify-center rounded-full bg-primary">
+                        <Text className="text-[28px] font-heading text-surface">
                             V
                         </Text>
                     </View>
-                    <Text className="mt-3 text-[18px] font-bold text-black">
+                    <Text className="mt-3 font-heading text-heading text-primary">
                         Varun
                     </Text>
-                    <Text className="mt-0.5 text-[13px] text-neutral-500">
+                    <Text className="mt-0.5 font-body text-secondary text-secondary">
                         Rediscovering saved knowledge
                     </Text>
                 </View>
 
                 {/* Stats */}
-                <View className="mx-5 flex-row rounded-2xl border border-neutral-200 bg-neutral-50 p-4">
+                <View className="mx-5 flex-row rounded-card border border-border bg-surface-muted p-4">
                     {STATS.map((s, i) => {
                         const Icon = s.icon;
                         return (
@@ -62,15 +63,15 @@ export default function ProfileScreen() {
                                 key={s.label}
                                 className={`flex-1 items-center ${
                                     i < STATS.length - 1
-                                        ? "border-r border-neutral-200"
+                                        ? "border-r border-border"
                                         : ""
                                 }`}
                             >
-                                <Icon size={18} color="#000" />
-                                <Text className="mt-1.5 text-[18px] font-bold text-black">
+                                <Icon size={18} color={Colors.textPrimary} />
+                                <Text className="mt-1.5 font-heading text-heading text-primary">
                                     {s.value}
                                 </Text>
-                                <Text className="text-[12px] text-neutral-500">
+                                <Text className="font-body text-secondary text-muted">
                                     {s.label}
                                 </Text>
                             </View>
@@ -80,7 +81,7 @@ export default function ProfileScreen() {
 
                 {/* Menu */}
                 <View className="mt-6 px-5">
-                    <Text className="mb-3 text-[11px] font-semibold tracking-widest text-neutral-500">
+                    <Text className="font-label text-label text-muted mb-3">
                         ACCOUNT
                     </Text>
                     {MENU.map((item) => {
@@ -88,15 +89,15 @@ export default function ProfileScreen() {
                         return (
                             <Pressable
                                 key={item.label}
-                                className="mb-3 flex-row items-center rounded-2xl border border-neutral-200 bg-white p-4"
+                                className="mb-3 flex-row items-center rounded-card border border-border bg-surface p-4"
                             >
-                                <View className="mr-3 h-10 w-10 items-center justify-center rounded-full bg-neutral-100">
-                                    <Icon size={18} color="#000" />
+                                <View className="mr-3 h-10 w-10 items-center justify-center rounded-full bg-surface-muted">
+                                    <Icon size={18} color={Colors.textPrimary} />
                                 </View>
-                                <Text className="flex-1 text-[15px] font-semibold text-black">
+                                <Text className="flex-1 font-semibold text-body text-primary">
                                     {item.label}
                                 </Text>
-                                <ChevronRight size={18} color="#9ca3af" />
+                                <ChevronRight size={18} color={Colors.textMuted} />
                             </Pressable>
                         );
                     })}
