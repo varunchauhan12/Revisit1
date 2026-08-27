@@ -124,7 +124,7 @@ export default function HomeScreen() {
           position: "absolute",
           left: 0,
           right: 0,
-          bottom: bottomOffset + 86,
+          bottom: bottomOffset + 84,
           paddingHorizontal: 20,
           alignItems: "center",
         }}
@@ -133,7 +133,7 @@ export default function HomeScreen() {
           style={{
             width: "100%",
             maxWidth: 460,
-            borderRadius: 999,
+            borderRadius: 16,
             backgroundColor: "#FFFFFF",
             ...Platform.select({
               ios: {

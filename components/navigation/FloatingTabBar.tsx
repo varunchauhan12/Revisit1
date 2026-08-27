@@ -23,11 +23,11 @@ import {
     User,
 } from "lucide-react-native";
 import type { BottomTabBarProps } from "@react-navigation/bottom-tabs";
-import { Colors } from "@/constants/colors";
 
 /**
  * Visual configuration for each tab, keyed by the file-based route name
- * inside the `(tabs)` group.
+ * inside the `(tabs)` group. All four tabs live inside a single white pill;
+ * the active tab is marked by a soft gray rounded highlight + bold label.
  */
 const TAB_CONFIG: Record<string, { label: string; icon: LucideIcon }> = {
     index: { label: "Home", icon: House },
@@ -36,24 +36,21 @@ const TAB_CONFIG: Record<string, { label: string; icon: LucideIcon }> = {
     profile: { label: "Profile", icon: User },
 };
 
-// The route rendered as the standalone contrasting circle.
-const PROFILE_ROUTE = "profile";
-// Routes rendered inside the main white pill, in order.
-const MAIN_ROUTES = ["index", "goals", "library"];
+// Routes rendered inside the pill, in order.
+const MAIN_ROUTES = ["index", "goals", "library", "profile"];
 
-const ACTIVE_COLOR = Colors.textPrimary;
-const INACTIVE_COLOR = Colors.textMuted;
+const ACTIVE_COLOR = "#0a0a0a";
+const INACTIVE_COLOR = "#3f3f46";
 
-const CONTAINER_PADDING = 4;
-const CIRCLE_SIZE = 48;
+const CONTAINER_PADDING = 6;
 
 const SPRING = { damping: 18, stiffness: 190, mass: 0.9 };
 
 const shadow: ViewStyle = Platform.select({
     ios: {
-        shadowColor: Colors.textPrimary,
+        shadowColor: "#000",
         shadowOffset: { width: 0, height: 8 },
-        shadowOpacity: 0.08,
+        shadowOpacity: 0.12,
         shadowRadius: 20,
     },
     android: { elevation: 12 },
@@ -61,7 +58,7 @@ const shadow: ViewStyle = Platform.select({
 }) as ViewStyle;
 
 /* -------------------------------------------------------------------------- */
-/* Main pill tab item                                                          */
+/* Pill tab item                                                               */
 /* -------------------------------------------------------------------------- */
 
 type TabItemProps = {
@@ -89,13 +86,8 @@ function TabItem({
 
     const iconStyle = useAnimatedStyle(() => ({
         transform: [
-            { scale: interpolate(progress.value, [0, 1], [1, 1.12]) },
-            { translateY: interpolate(progress.value, [0, 1], [0, -1]) },
+            { scale: interpolate(progress.value, [0, 1], [1, 1.05]) },
         ],
-    }));
-
-    const labelStyle = useAnimatedStyle(() => ({
-        opacity: interpolate(progress.value, [0, 1], [0.7, 1]),
     }));
 
     return (
@@ -106,93 +98,27 @@ function TabItem({
             onPress={onPress}
             onLongPress={onLongPress}
             style={{ width }}
-            className="items-center justify-center py-1.5"
+            className="items-center justify-center py-2"
             hitSlop={8}
         >
             <Animated.View style={iconStyle}>
                 <Icon
-                    size={20}
+                    size={22}
                     color={focused ? ACTIVE_COLOR : INACTIVE_COLOR}
                     strokeWidth={focused ? 2.4 : 2}
                 />
             </Animated.View>
             <Animated.Text
-                style={[
-                    labelStyle,
-                    {
-                        color: focused ? ACTIVE_COLOR : INACTIVE_COLOR,
-                        fontSize: 10,
-                        fontWeight: focused ? "700" : "500",
-                        marginTop: 2,
-                    },
-                ]}
+                style={{
+                    color: focused ? ACTIVE_COLOR : INACTIVE_COLOR,
+                    fontSize: 11,
+                    fontWeight: focused ? "700" : "500",
+                    marginTop: 4,
+                }}
                 numberOfLines={1}
             >
                 {label}
             </Animated.Text>
-        </Pressable>
-    );
-}
-
-/* -------------------------------------------------------------------------- */
-/* Standalone contrasting Profile circle                                       */
-/* -------------------------------------------------------------------------- */
-
-type ProfileButtonProps = {
-    focused: boolean;
-    icon: LucideIcon;
-    label: string;
-    onPress: () => void;
-    onLongPress: () => void;
-};
-
-function ProfileButton({
-    focused,
-    icon: Icon,
-    label,
-    onPress,
-    onLongPress,
-}: ProfileButtonProps) {
-    const progress = useSharedValue(focused ? 1 : 0);
-
-    useEffect(() => {
-        progress.value = withSpring(focused ? 1 : 0, SPRING);
-    }, [focused, progress]);
-
-    const circleStyle = useAnimatedStyle(() => ({
-        transform: [{ scale: interpolate(progress.value, [0, 1], [1, 1.06]) }],
-    }));
-
-    return (
-        <Pressable
-            accessibilityRole="button"
-            accessibilityState={focused ? { selected: true } : {}}
-            accessibilityLabel={label}
-            onPress={onPress}
-            onLongPress={onLongPress}
-            hitSlop={8}
-        >
-            <Animated.View
-                style={[
-                    {
-                        width: CIRCLE_SIZE,
-                        height: CIRCLE_SIZE,
-                        borderRadius: CIRCLE_SIZE / 2,
-                        backgroundColor: Colors.textPrimary,
-                        alignItems: "center",
-                        justifyContent: "center",
-                    },
-                    shadow,
-                    circleStyle,
-                ]}
-            >
-                <Icon
-                    size={20}
-                    color={Colors.surface}
-                    strokeWidth={focused ? 2.4 : 2}
-                    opacity={focused ? 1 : 0.75}
-                />
-            </Animated.View>
         </Pressable>
     );
 }
@@ -209,28 +135,25 @@ export function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
         state.routes.find((r) => r.name === name)
     ).filter((r): r is (typeof state.routes)[number] => Boolean(r));
 
-    const profileRoute = state.routes.find((r) => r.name === PROFILE_ROUTE);
-
     const focusedRoute = state.routes[state.index];
     const tabCount = mainRoutes.length;
     const tabWidth = tabCount > 0 ? trackWidth / tabCount : 0;
 
-    const activeMainIndex = mainRoutes.findIndex(
+    const activeIndex = mainRoutes.findIndex(
         (r) => r.key === focusedRoute?.key
     );
-    const isProfileFocused = profileRoute?.key === focusedRoute?.key;
 
     const translateX = useSharedValue(0);
-    const pillOpacity = useSharedValue(activeMainIndex >= 0 ? 1 : 0);
+    const pillOpacity = useSharedValue(activeIndex >= 0 ? 1 : 0);
 
     useEffect(() => {
-        if (tabWidth > 0 && activeMainIndex >= 0) {
-            translateX.value = withSpring(activeMainIndex * tabWidth, SPRING);
+        if (tabWidth > 0 && activeIndex >= 0) {
+            translateX.value = withSpring(activeIndex * tabWidth, SPRING);
         }
-        pillOpacity.value = withTiming(activeMainIndex >= 0 ? 1 : 0, {
+        pillOpacity.value = withTiming(activeIndex >= 0 ? 1 : 0, {
             duration: 180,
         });
-    }, [activeMainIndex, tabWidth, translateX, pillOpacity]);
+    }, [activeIndex, tabWidth, translateX, pillOpacity]);
 
     const pillStyle = useAnimatedStyle(() => ({
         width: tabWidth,
@@ -278,81 +201,58 @@ export function FloatingTabBar({ state, navigation }: BottomTabBarProps) {
                 alignItems: "center",
             }}
         >
+            {/* Single white pill containing all four tabs */}
             <View
-                style={{
-                    flexDirection: "row",
-                    alignItems: "center",
-                    width: "100%",
-                    maxWidth: 460,
-                    gap: 12,
-                }}
+                style={[
+                    {
+                        width: "100%",
+                        maxWidth: 460,
+                        backgroundColor: "#ffffff",
+                        borderRadius: 28,
+                        padding: CONTAINER_PADDING,
+                    },
+                    shadow,
+                ]}
             >
-                {/* White pill with the three main tabs */}
                 <View
-                    style={[
-                        {
-                            flex: 1,
-                            backgroundColor: Colors.surface,
-                            borderRadius: 24,
-                            padding: CONTAINER_PADDING,
-                        },
-                        shadow,
-                    ]}
+                    onLayout={onTrackLayout}
+                    style={{ flexDirection: "row" }}
                 >
-                    <View
-                        onLayout={onTrackLayout}
-                        style={{ flexDirection: "row" }}
-                    >
-                        {/* Sliding active pill background */}
-                        {tabWidth > 0 && (
-                            <Animated.View
-                                pointerEvents="none"
-                                style={[
-                                    {
-                                        position: "absolute",
-                                        top: 0,
-                                        bottom: 0,
-                                        left: 0,
-                                        borderRadius: 20,
-                                        backgroundColor: Colors.surfaceMuted,
-                                    },
-                                    pillStyle,
-                                ]}
+                    {/* Sliding active highlight */}
+                    {tabWidth > 0 && (
+                        <Animated.View
+                            pointerEvents="none"
+                            style={[
+                                {
+                                    position: "absolute",
+                                    top: 0,
+                                    bottom: 0,
+                                    left: 0,
+                                    borderRadius: 20,
+                                    backgroundColor: "#f2f2f2",
+                                },
+                                pillStyle,
+                            ]}
+                        />
+                    )}
+
+                    {mainRoutes.map((route) => {
+                        const { label, icon } = TAB_CONFIG[route.name];
+                        const { isFocused, onPress, onLongPress } =
+                            makeHandlers(route);
+                        return (
+                            <TabItem
+                                key={route.key}
+                                focused={isFocused}
+                                label={label}
+                                icon={icon}
+                                onPress={onPress}
+                                onLongPress={onLongPress}
+                                width={tabWidth || 0}
                             />
-                        )}
-
-                        {mainRoutes.map((route) => {
-                            const { label, icon } = TAB_CONFIG[route.name];
-                            const { isFocused, onPress, onLongPress } =
-                                makeHandlers(route);
-                            return (
-                                <TabItem
-                                    key={route.key}
-                                    focused={isFocused}
-                                    label={label}
-                                    icon={icon}
-                                    onPress={onPress}
-                                    onLongPress={onLongPress}
-                                    width={tabWidth || 0}
-                                />
-                            );
-                        })}
-                    </View>
+                        );
+                    })}
                 </View>
-
-                {/* Separate contrasting Profile circle */}
-                {profileRoute && (
-                    <ProfileButton
-                        focused={isProfileFocused}
-                        icon={TAB_CONFIG[PROFILE_ROUTE].icon}
-                        label={TAB_CONFIG[PROFILE_ROUTE].label}
-                        {...(() => {
-                            const { onPress, onLongPress } =
-                                makeHandlers(profileRoute);
-                            return { onPress, onLongPress };
-                        })()}
-                    />
-                )}
             </View>
         </View>
     );

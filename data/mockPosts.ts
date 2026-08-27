@@ -25,6 +25,8 @@ export type Post = {
     publishedAt: string;
     /** e.g. "5 min read" / "12 min watch". */
     readTime: string;
+    /** Short relative "saved" label, e.g. "2h ago" / "Yesterday" / "3 days ago". */
+    savedAt: string;
     /** Original source URL (mock). */
     url: string;
     /** Short "why it matters" blurb shown on the card + detail page. */
@@ -50,6 +52,7 @@ export const mockPosts: Post[] = [
         author: "Startup Playbook",
         publishedAt: "Aug 27, 2026",
         readTime: "5 min read",
+        savedAt: "2h ago",
         url: "https://linkedin.com/posts/yc-startup-pricing",
         whyItMatters:
             "Directly addresses your pricing strategy for your SaaS project.",
@@ -80,6 +83,7 @@ export const mockPosts: Post[] = [
         author: "r/startups",
         publishedAt: "Aug 21, 2026",
         readTime: "8 min read",
+        savedAt: "1d ago",
         url: "https://reddit.com/r/startups/first-100-users",
         whyItMatters:
             "Useful because you're currently focused on startup growth.",
@@ -110,6 +114,7 @@ export const mockPosts: Post[] = [
         author: "Indie Hackers",
         publishedAt: "Aug 15, 2026",
         readTime: "12 min watch",
+        savedAt: "4d ago",
         url: "https://youtube.com/watch?v=build-saas-2026",
         whyItMatters: "Relevant to your current startup-building goal.",
         description:
@@ -139,6 +144,7 @@ export const mockPosts: Post[] = [
         author: "Growth Notes",
         publishedAt: "Aug 09, 2026",
         readTime: "6 min read",
+        savedAt: "1w ago",
         url: "https://medium.com/@growthnotes/systems-behind-growth",
         whyItMatters:
             "Useful for building sustainable habits around your goals.",
@@ -169,6 +175,7 @@ export const mockPosts: Post[] = [
         author: "paulgraham.com",
         publishedAt: "Jul 14, 2026",
         readTime: "7 min read",
+        savedAt: "6w ago",
         url: "https://paulgraham.com/first-100-users",
         whyItMatters:
             "You saved this 6 weeks ago while planning your launch — worth a re-read.",
@@ -191,12 +198,147 @@ export const mockPosts: Post[] = [
             "The unscalable work of the early days is what seeds the word-of-mouth growth that eventually does scale. Start by hand, delight the few, and let them bring the many.",
         ],
     },
+    {
+        id: "startup-mlp",
+        source: "medium",
+        goal: "BUILD A STARTUP",
+        title: "How to Build a Minimum Lovable Product",
+        author: "Product Craft",
+        publishedAt: "Aug 12, 2026",
+        readTime: "6 min read",
+        savedAt: "3d ago",
+        url: "https://medium.com/@productcraft/minimum-lovable-product",
+        whyItMatters:
+            "Reframes your MVP as something people actually want to use, not just tolerate.",
+        description:
+            "Move beyond the MVP and build something people truly love.",
+        aiSummary:
+            "An argument for replacing the 'minimum viable product' mindset with a 'minimum lovable product'. Rather than shipping the least you can get away with, focus the same small scope on one experience users genuinely love, because early delight drives the word-of-mouth an MVP rarely earns.",
+        keyTakeaways: [
+            "A viable product is easy to ignore; a lovable one gets talked about.",
+            "Narrow the scope, but make what remains genuinely delightful.",
+            "Early love, not early features, is what drives referrals.",
+            "Polish one core moment instead of spreading effort thin.",
+        ],
+        tags: ["Startup", "Product", "MVP", "Design"],
+        content: [
+            "The 'minimum viable product' has become a license to ship mediocrity. Technically it works, but nobody loves it — and nobody tells their friends about something they merely tolerate.",
+            "A minimum lovable product takes the same small scope and pours the effort into making one experience genuinely delightful. It does less, but what it does, it does beautifully.",
+            "This matters most at the earliest stage, when word of mouth is your only real distribution. People share things that surprise and delight them, not things that are simply functional.",
+            "Practically, that means resisting the urge to add features and instead polishing the single core moment your product exists to deliver. Depth over breadth.",
+            "Ship small, but ship something people love. Lovable beats viable every time in the fight for early traction.",
+        ],
+    },
+    {
+        id: "yt-system-design",
+        source: "youtube",
+        goal: "SYSTEM DESIGN",
+        title: "System Design Interview: Scaling to Millions",
+        author: "Tech Interview Pro",
+        publishedAt: "Aug 25, 2026",
+        readTime: "18 min read",
+        savedAt: "2h ago",
+        url: "https://youtube.com/watch?v=scaling-to-millions",
+        whyItMatters:
+            "Covers the exact scaling questions asked in senior engineering interviews.",
+        description:
+            "A walkthrough of how to scale a system from one server to millions of users.",
+        aiSummary:
+            "A structured walkthrough of scaling a web system from a single server to millions of users. It covers load balancing, caching layers, database replication and sharding, and asynchronous processing, framed around how to reason about these trade-offs live in an interview.",
+        keyTakeaways: [
+            "Start simple and introduce complexity only when a bottleneck demands it.",
+            "Caching and read replicas solve most early read-scaling problems.",
+            "Sharding is powerful but adds operational complexity — defer it.",
+            "Narrate your trade-offs; interviewers grade reasoning over answers.",
+        ],
+        tags: ["SystemDesign", "Scaling", "Interviews", "Backend"],
+        content: [
+            "Scaling a system is less about knowing the 'right' architecture and more about knowing which bottleneck to attack next. You start with one server and let real constraints guide each step.",
+            "The first move is almost always separating concerns: pull the database onto its own machine, put a load balancer in front of stateless app servers, and you can already handle far more traffic.",
+            "Reads usually dominate, so caching and read replicas come next. A cache in front of your database absorbs the bulk of repeated queries, and replicas spread the rest.",
+            "Only when a single database can't hold the write load do you reach for sharding — and you do so reluctantly, because it complicates every query and transaction that follows.",
+            "In an interview, the architecture matters less than your reasoning. Say why you're adding each piece, what it costs, and when you'd avoid it.",
+        ],
+    },
+    {
+        id: "gh-awesome-rn",
+        source: "github",
+        goal: "PROGRAMMING",
+        title: "awesome-react-native — curated components",
+        author: "github.com/jondot",
+        publishedAt: "Aug 26, 2026",
+        readTime: "8 min read",
+        savedAt: "Yesterday",
+        url: "https://github.com/jondot/awesome-react-native",
+        whyItMatters:
+            "A ready-made shortlist of vetted libraries for your current RN build.",
+        description:
+            "A curated, categorized list of the best React Native components, tools and libraries.",
+        aiSummary:
+            "A community-maintained catalog of the React Native ecosystem — UI components, navigation, animation, state management, and developer tooling — organized by category so you can find a vetted library instead of reinventing common building blocks.",
+        keyTakeaways: [
+            "Reach for a vetted library before building common UI from scratch.",
+            "The list is organized by category, making it fast to scan for a need.",
+            "Popularity and maintenance signals help you avoid dead dependencies.",
+            "Great starting point for choosing navigation and animation tools.",
+        ],
+        tags: ["ReactNative", "OpenSource", "Tools", "Mobile"],
+        content: [
+            "The React Native ecosystem is vast, and the hardest part is often just knowing what already exists. A curated list saves you from rebuilding solved problems.",
+            "The collection is organized by category — UI kits, navigation, animation, forms, state management, testing — so you can jump straight to the area you're working on.",
+            "For anything user-facing, it's worth checking here first. There's almost always a well-maintained component that handles the edge cases you haven't thought of yet.",
+            "Pay attention to the maintenance and popularity signals. A library with recent commits and broad adoption is far safer than an abandoned one, however elegant.",
+            "Treat it as a starting map of the ecosystem, not gospel — but for choosing dependencies quickly, it's one of the most useful references you can bookmark.",
+        ],
+    },
+    {
+        id: "medium-pm-metrics",
+        source: "medium",
+        goal: "CAREER",
+        title: "The Product Manager's Guide to Metrics",
+        author: "PM Weekly",
+        publishedAt: "Aug 24, 2026",
+        readTime: "12 min read",
+        savedAt: "3 days ago",
+        url: "https://medium.com/@pmweekly/guide-to-metrics",
+        whyItMatters:
+            "Helps you speak the language of impact when you move toward a PM role.",
+        description:
+            "Which product metrics actually matter, and how to avoid vanity numbers.",
+        aiSummary:
+            "A practical guide to product metrics that separates signal from vanity. It explains how to choose a north-star metric, pair it with counter-metrics to avoid gaming, and tie every number back to a real user or business outcome rather than tracking activity for its own sake.",
+        keyTakeaways: [
+            "Pick one north-star metric that reflects real user value.",
+            "Pair growth metrics with counter-metrics to avoid gaming them.",
+            "Vanity metrics feel good but rarely inform decisions.",
+            "Every metric should map to a user or business outcome.",
+        ],
+        tags: ["Product", "Metrics", "Career", "Analytics"],
+        content: [
+            "Most teams drown in dashboards while starving for insight. The problem isn't too little data — it's tracking numbers that don't inform any decision.",
+            "The antidote is a north-star metric: a single measure that captures the core value your product delivers. Everything else exists to explain movements in that one number.",
+            "But a north-star alone is dangerous. Optimize any single metric hard enough and you'll distort behavior, so you pair it with counter-metrics that keep the system honest.",
+            "The test for any metric is simple: if it moved, would you do anything differently? If not, it's a vanity number — pleasant to report, useless for steering.",
+            "Good product sense is ultimately about connecting numbers to outcomes. Track what reflects real value, and let the vanity charts go.",
+        ],
+    },
 ];
 
 /** Look up a single post by id. Returns undefined if not found. */
 export function getPostById(id: string | undefined): Post | undefined {
     if (!id) return undefined;
     return mockPosts.find((p) => p.id === id);
+}
+
+/**
+ * The three most recently saved posts, in the order shown on the Library
+ * screen's "Recently Saved" section.
+ */
+export function getRecentlySaved(): Post[] {
+    const order = ["yt-system-design", "gh-awesome-rn", "medium-pm-metrics"];
+    return order
+        .map((id) => mockPosts.find((p) => p.id === id))
+        .filter((p): p is Post => Boolean(p));
 }
 
 /**

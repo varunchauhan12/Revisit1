@@ -16,6 +16,7 @@ export type ContentPlatform =
     | "youtube"
     | "twitter"
     | "medium"
+    | "github"
     | "web";
 
 export type PlatformConfig = {
@@ -64,6 +65,13 @@ export const CONTENT_PLATFORMS: Record<ContentPlatform, PlatformConfig> = {
         primary: "#4B6B57",
         soft: "#EDF3EF",
         border: "#D9E5DD",
+    },
+    github: {
+        label: "GitHub",
+        icon: "logo-github",
+        primary: "#3A3A38",
+        soft: "#F1F1EC",
+        border: "#E2E1DA",
     },
     web: {
         label: "Article",
