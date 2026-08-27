@@ -1,30 +1,56 @@
-import { View, Text, ScrollView, Pressable, Platform } from "react-native";
+import { View, Text, ScrollView, Platform } from "react-native";
 import {
   SafeAreaView,
   useSafeAreaInsets,
 } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
-import { Ionicons } from "@expo/vector-icons";
 import {
   RevisitCard,
   EmergingFocusCard,
   SearchBar,
   HorizontalContentCarousel,
+  CurrentFocusCard,
+  InsightCard,
+  WorthAnotherLookItem,
 } from "@/components/home";
 import { getHomeCarouselItems } from "@/data/mockPosts";
 
-// Mock data for the header greeting — replace with real user/streak data later.
+// Mock data for the header greeting — replace with real user data later.
 const MOCK_USER_NAME = "Varun";
-const MOCK_STREAK_DAYS = 5;
 
 // Home content cards derived from the shared mock post data.
 const HOME_CARDS = getHomeCarouselItems();
+
+// Older saves the system resurfaces as relevant now (mock).
+const WORTH_ANOTHER_LOOK = [
+  {
+    id: "medium-pm-metrics",
+    title: "The Product Manager's Guide to Metrics",
+    savedAgo: "Saved 3 months ago",
+    reason: "You've recently been reading about startup growth.",
+  },
+  {
+    id: "mock-medium",
+    title: "The Systems Behind Consistent Growth",
+    savedAgo: "Saved 2 months ago",
+    reason: "Connects to the repeatable-growth systems you've been exploring.",
+  },
+] as const;
 
 function getGreeting() {
   const hour = new Date().getHours();
   if (hour < 12) return "Good morning";
   if (hour < 18) return "Good afternoon";
   return "Good evening";
+}
+
+/** Small uppercase section label used throughout the dashboard. */
+function SectionLabel({ children }: { children: string }) {
+  return (
+    <Text className="font-label text-label text-muted mb-3 px-5">
+      {children}
+    </Text>
+  );
 }
 
 export default function HomeScreen() {
@@ -39,29 +65,24 @@ export default function HomeScreen() {
         contentContainerStyle={{ paddingBottom: bottomOffset + 160 }}
         showsVerticalScrollIndicator={false}
       >
-        {/* Header */}
+        {/* 1. Greeting */}
         <View className="px-5 pt-4 pb-2">
-          <View className="flex-row items-start justify-between mb-4">
-            <View className="flex-1 pr-3">
-              <Text className="font-display text-display text-primary">
-                {getGreeting()}, {MOCK_USER_NAME}
-              </Text>
-              <Text className="font-body text-body text-secondary mt-1.5">
-                Here are a few things worth remembering.
-              </Text>
-            </View>
-            <View className="flex-row items-center gap-3 mt-1">
-              <Text className="font-medium text-secondary text-muted"></Text>
-            </View>
-          </View>
+          <Text className="font-display text-display text-primary">
+            {getGreeting()}, {MOCK_USER_NAME}
+          </Text>
+          <Text className="font-body text-body text-secondary mt-1.5">
+            Here are a few things worth remembering.
+          </Text>
         </View>
 
-        {/* Goal pills */}
+        {/* Building toward — goal pills */}
+        <Text className="font-label text-label text-muted mt-3 mb-3 px-5">
+          BUILDING TOWARD
+        </Text>
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          contentContainerClassName="px-5 gap-3 pb-2"
-          className="mb-4"
+          contentContainerClassName="px-5 gap-3 pb-1"
         >
           <View className="bg-primary rounded-pill px-4 py-2.5 flex-row items-center">
             <Text className="text-[13px] mr-1.5">🚀</Text>
@@ -77,13 +98,25 @@ export default function HomeScreen() {
           </View>
         </ScrollView>
 
-        {/* Section: For Your Goal */}
-        <View className="mb-1">
-          <Text className="font-label text-label text-muted mb-3 px-5">
-            FOR YOUR GOAL: BUILD A STARTUP
-          </Text>
+        {/* 2. Your Current Focus — featured card */}
+        <View className="mt-7">
+          <SectionLabel>YOUR CURRENT FOCUS</SectionLabel>
+          <View className="px-5">
+            <CurrentFocusCard
+              goal="Build a startup"
+              savesThisWeek={12}
+              worthRevisiting={4}
+              onViewGoal={() => router.push("/collection/startup")}
+            />
+          </View>
+        </View>
 
-          {/* Content Cards */}
+        {/* 3. Top Reads For You — horizontal cards */}
+        <View className="mt-7">
+          <SectionLabel>TOP READS FOR YOU</SectionLabel>
+          <Text className="font-body text-secondary text-secondary px-5 -mt-1 mb-3">
+            Because you&apos;re focusing on Build a startup
+          </Text>
           <HorizontalContentCarousel
             items={HOME_CARDS}
             onItemPress={(item) => {
@@ -92,28 +125,58 @@ export default function HomeScreen() {
           />
         </View>
 
-        {/* Revisit Card */}
-        <View className="px-5 mt-5">
-          <RevisitCard
-            timeAgo="6 weeks ago"
-            title="How to Find Your First 100 Users"
-            summary="Doing things that don't scale is the only way to get your initial traction. This..."
-            source="paulgraham.com"
-            onReadAgain={() => router.push("/post/revisit-first-100-users")}
-          />
+        {/* 4. Continue Your Revisit — single card */}
+        <View className="mt-7">
+          <SectionLabel>CONTINUE YOUR REVISIT</SectionLabel>
+          <View className="px-5">
+            <RevisitCard
+              timeAgo="6 weeks ago"
+              title="How to Find Your First 100 Users"
+              summary="Doing things that don't scale is the only way to get your initial traction. This..."
+              source="paulgraham.com"
+              onReadAgain={() => router.push("/post/revisit-first-100-users")}
+            />
+          </View>
         </View>
 
-        {/* Emerging Focus Section */}
-        <View className="px-5 mt-6">
-          <Text className="font-label text-label text-muted mb-3">
-            EMERGING FOCUS
-          </Text>
+        {/* 5. What You've Been Learning — insight card */}
+        <View className="mt-7">
+          <SectionLabel>WHAT YOU&apos;VE BEEN LEARNING</SectionLabel>
+          <View className="px-5">
+            <InsightCard
+              observation="You've saved 8 pieces about customer acquisition this month."
+              theme="Talk to users before building distribution."
+              onExplore={() => router.push("/collection/marketing")}
+            />
+          </View>
+        </View>
 
-          <EmergingFocusCard
-            savesCount={8}
-            topic="Marketing"
-            description="You've been saving a lot about growth loops and SEO. Track this as a new goal?"
-          />
+        {/* 6. Emerging Focus — soft-background card */}
+        <View className="mt-7">
+          <SectionLabel>EMERGING FOCUS</SectionLabel>
+          <View className="px-5">
+            <EmergingFocusCard
+              savesCount={8}
+              topic="Marketing"
+              description="You're increasingly saving content about customer acquisition and growth. Track this as a goal?"
+            />
+          </View>
+        </View>
+
+        {/* 7. Worth Another Look — compact list */}
+        <View className="mt-7">
+          <SectionLabel>WORTH ANOTHER LOOK</SectionLabel>
+          <View className="px-5 gap-3">
+            {WORTH_ANOTHER_LOOK.map((item) => (
+              <WorthAnotherLookItem
+                key={item.id}
+                title={item.title}
+                savedAgo={item.savedAgo}
+                reason={item.reason}
+                onPress={() => router.push(`/post/${item.id}`)}
+              />
+            ))}
+          </View>
         </View>
       </ScrollView>
 

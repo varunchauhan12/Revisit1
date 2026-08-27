@@ -6,4 +6,7 @@ export type { HorizontalContentCarouselProps } from "./horizontal-content-carous
 export { RevisitCard } from "./revisit-card";
 export { EmergingFocusCard } from "./emerging-focus-card";
 export { SearchBar } from "./search-bar";
+export { CurrentFocusCard } from "./current-focus-card";
+export { InsightCard } from "./insight-card";
+export { WorthAnotherLookItem } from "./worth-another-look-item";
 
