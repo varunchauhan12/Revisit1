@@ -322,6 +322,68 @@ export const mockPosts: Post[] = [
             "Good product sense is ultimately about connecting numbers to outcomes. Track what reflects real value, and let the vanity charts go.",
         ],
     },
+    {
+        id: "saas-pricing-strategies",
+        source: "medium",
+        goal: "BUILD A STARTUP",
+        title: "Pricing Strategies for SaaS",
+        author: "SaaS Field Notes",
+        publishedAt: "Aug 19, 2026",
+        readTime: "8 min read",
+        savedAt: "5 days ago",
+        url: "https://medium.com/@saasfieldnotes/pricing-strategies-for-saas",
+        whyItMatters:
+            "Gives you concrete pricing models to test as you take your SaaS to market.",
+        description:
+            "A comparison of the pricing models SaaS companies actually use, and when each one fits.",
+        aiSummary:
+            "A practical tour of SaaS pricing models — flat-rate, per-seat, usage-based, and tiered — with guidance on matching the model to how customers derive value. The through-line is that pricing should be treated as an ongoing experiment anchored to willingness to pay, not a number set once at launch.",
+        keyTakeaways: [
+            "Match your pricing model to how customers actually get value.",
+            "Usage-based pricing aligns cost with the value a customer receives.",
+            "Tiers work best when each level maps to a clear customer segment.",
+            "Anchor every pricing decision to willingness to pay, then iterate.",
+        ],
+        tags: ["SaaS", "Pricing", "Startup", "GoToMarket"],
+        content: [
+            "There is no universally correct SaaS pricing model — only the one that best mirrors how your customers experience value. The mistake is copying a competitor's model without understanding why it fits them.",
+            "Flat-rate pricing is simple and predictable, but it leaves money on the table with power users and scares away small ones. Per-seat pricing scales with team size, but can penalize the very adoption you want to encourage.",
+            "Usage-based pricing has surged in popularity because it aligns what customers pay with the value they extract. When a customer grows, so does your revenue — without a renegotiation. The risk is unpredictability, for both sides.",
+            "Tiered pricing tries to capture the best of each by segmenting customers into packages. It works when each tier maps cleanly to a distinct type of buyer, and falls apart when the tiers are arbitrary.",
+            "Whatever you choose, treat the first version as a hypothesis. Anchor it to what customers are willing to pay, put it in front of real buyers, and revise deliberately as you learn.",
+        ],
+    },
+    {
+        id: "founder-pricing-discussion",
+        source: "reddit",
+        goal: "BUILD A STARTUP",
+        title: "Founder discussion on pricing",
+        author: "r/SaaS",
+        publishedAt: "Aug 05, 2026",
+        readTime: "12 min read",
+        savedAt: "2 weeks ago",
+        url: "https://reddit.com/r/SaaS/founder-pricing-discussion",
+        whyItMatters:
+            "Real founders share what raising prices actually did to their conversion and churn.",
+        description:
+            "Founders debate how they set, tested and raised prices — and what surprised them.",
+        aiSummary:
+            "A long founder thread on the realities of pricing. The dominant lesson is that most founders discover they were charging far too little, and that raising prices — often dramatically — improved both revenue and customer quality without the collapse in conversion they feared.",
+        keyTakeaways: [
+            "Most founders in the thread had priced too low and regretted it.",
+            "Raising prices often improved customer quality, not just revenue.",
+            "Feared drops in conversion rarely materialized after a price increase.",
+            "Talk to churned and 'no' prospects to understand price sensitivity.",
+        ],
+        tags: ["Pricing", "Startup", "SaaS", "Founders"],
+        content: [
+            "The thread opens with a question every founder eventually asks: 'Are we charging too little?' The near-unanimous answer from those who'd been through it: almost certainly, yes.",
+            "Founder after founder described raising prices — sometimes doubling or tripling them — and watching revenue climb while the flood of low-quality, high-support customers slowed. Higher prices quietly filtered for better-fit buyers.",
+            "The fear that stops most people is that conversion will crater. But the recurring experience was that the drop was far smaller than expected, and more than offset by the higher price and healthier customers.",
+            "Several founders stressed the value of talking to the people who churned or said no. Those conversations, not spreadsheets, revealed where price genuinely mattered and where it was just a convenient excuse.",
+            "The consensus wasn't 'charge as much as possible' — it was 'you almost certainly have more room than you think, so test upward deliberately and listen to who leaves.'",
+        ],
+    },
 ];
 
 /** Look up a single post by id. Returns undefined if not found. */
@@ -344,11 +406,17 @@ export function getRecentlySaved(): Post[] {
 /**
  * Adapt the mock posts into the `ContentItem` shape the Home carousel
  * already consumes. Keeps a single source of truth so both screens stay
- * in sync. Excludes the revisit-only post (rendered by RevisitCard).
+ * in sync. Excludes the revisit-only post (rendered by RevisitCard) and the
+ * search-only pricing posts (surfaced only in Semantic Search results).
  */
 export function getHomeCarouselItems(): ContentItem[] {
+    const excluded = new Set([
+        "revisit-first-100-users",
+        "saas-pricing-strategies",
+        "founder-pricing-discussion",
+    ]);
     return mockPosts
-        .filter((p) => p.id !== "revisit-first-100-users")
+        .filter((p) => !excluded.has(p.id))
         .map((p) => ({
             id: p.id,
             platform: p.source,

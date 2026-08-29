@@ -236,7 +236,7 @@ export default function HomeScreen() {
             }),
           }}
         >
-          <SearchBar />
+          <SearchBar onPress={() => router.push("/search")} />
         </View>
       </View>
     </SafeAreaView>

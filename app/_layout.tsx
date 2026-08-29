@@ -93,6 +93,38 @@ export default function RootLayout() {
             animation: "slide_from_right",
           }}
         />
+
+        <Stack.Screen
+          name="goal/[id]"
+          options={{
+            headerShown: false,
+            animation: "slide_from_right",
+          }}
+        />
+
+        <Stack.Screen
+          name="knowledge-area/[id]"
+          options={{
+            headerShown: false,
+            animation: "slide_from_right",
+          }}
+        />
+
+        <Stack.Screen
+          name="insight/[id]"
+          options={{
+            headerShown: false,
+            animation: "slide_from_right",
+          }}
+        />
+
+        <Stack.Screen
+          name="search"
+          options={{
+            headerShown: false,
+            animation: "slide_from_bottom",
+          }}
+        />
       </Stack>
 
       <StatusBar style="dark" />
