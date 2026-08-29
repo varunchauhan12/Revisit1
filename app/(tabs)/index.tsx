@@ -10,32 +10,49 @@ import {
   SearchBar,
   HorizontalContentCarousel,
   CurrentFocusCard,
-  InsightCard,
-  WorthAnotherLookItem,
+  KeyInsightCard,
+  WhatToDoNext,
+  type ActionItem,
 } from "@/components/home";
 import { getHomeCarouselItems } from "@/data/mockPosts";
 
 // Mock data for the header greeting — replace with real user data later.
 const MOCK_USER_NAME = "Varun";
 
-// Home content cards derived from the shared mock post data.
+// Knowledge cards derived from the shared mock post data.
 const HOME_CARDS = getHomeCarouselItems();
 
-// Older saves the system resurfaces as relevant now (mock).
-const WORTH_ANOTHER_LOOK = [
+// Insights the system distilled from the user's saves (mock).
+const KEY_INSIGHTS = [
   {
-    id: "medium-pm-metrics",
-    title: "The Product Manager's Guide to Metrics",
-    savedAgo: "Saved 3 months ago",
-    reason: "You've recently been reading about startup growth.",
+    id: "insight-customer-discovery",
+    insight: "Talk to users before building anything.",
+    sources: 5,
+    category: "Customer Discovery",
+    collection: "marketing",
   },
   {
-    id: "mock-medium",
-    title: "The Systems Behind Consistent Growth",
-    savedAgo: "Saved 2 months ago",
-    reason: "Connects to the repeatable-growth systems you've been exploring.",
+    id: "insight-pricing",
+    insight: "Early-stage pricing should be tested, not perfected.",
+    sources: 3,
+    category: "Pricing",
+    collection: "startup",
   },
 ] as const;
+
+// Suggested next steps derived from the user's startup knowledge (mock).
+const NEXT_ACTIONS: ActionItem[] = [
+  {
+    id: "action-talk-customers",
+    title: "Talk to 5 potential customers",
+    category: "Customer Discovery",
+  },
+  {
+    id: "action-test-pricing",
+    title: "Test 3 pricing options",
+    category: "Pricing",
+  },
+];
 
 function getGreeting() {
   const hour = new Date().getHours();
@@ -53,6 +70,15 @@ function SectionLabel({ children }: { children: string }) {
   );
 }
 
+/** Optional supporting line under a section label. */
+function SectionSubtitle({ children }: { children: string }) {
+  return (
+    <Text className="font-body text-body text-secondary px-5 -mt-1 mb-4">
+      {children}
+    </Text>
+  );
+}
+
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
@@ -65,13 +91,13 @@ export default function HomeScreen() {
         contentContainerStyle={{ paddingBottom: bottomOffset + 160 }}
         showsVerticalScrollIndicator={false}
       >
-        {/* 1. Greeting */}
+        {/* 1. Greeting — plain typography */}
         <View className="px-5 pt-4 pb-2">
           <Text className="font-display text-display text-primary">
             {getGreeting()}, {MOCK_USER_NAME}
           </Text>
           <Text className="font-body text-body text-secondary mt-1.5">
-            Here are a few things worth remembering.
+            Here&apos;s what you&apos;re working toward.
           </Text>
         </View>
 
@@ -98,25 +124,24 @@ export default function HomeScreen() {
           </View>
         </ScrollView>
 
-        {/* 2. Your Current Focus — featured card */}
+        {/* 2. Your Current Focus — the hero of the screen */}
         <View className="mt-7">
           <SectionLabel>YOUR CURRENT FOCUS</SectionLabel>
           <View className="px-5">
             <CurrentFocusCard
               goal="Build a startup"
-              savesThisWeek={12}
-              worthRevisiting={4}
+              saves={24}
+              insights={6}
+              actions={3}
               onViewGoal={() => router.push("/collection/startup")}
             />
           </View>
         </View>
 
-        {/* 3. Top Reads For You — horizontal cards */}
-        <View className="mt-7">
-          <SectionLabel>TOP READS FOR YOU</SectionLabel>
-          <Text className="font-body text-secondary text-secondary px-5 -mt-1 mb-3">
-            Because you&apos;re focusing on Build a startup
-          </Text>
+        {/* 3. Knowledge for your goal — horizontal cards */}
+        <View className="mt-8">
+          <SectionLabel>KNOWLEDGE FOR YOUR GOAL</SectionLabel>
+          <SectionSubtitle>Because you&apos;re building a startup</SectionSubtitle>
           <HorizontalContentCarousel
             items={HOME_CARDS}
             onItemPress={(item) => {
@@ -125,8 +150,36 @@ export default function HomeScreen() {
           />
         </View>
 
-        {/* 4. Continue Your Revisit — single card */}
-        <View className="mt-7">
+        {/* 4. Key Insights — editorial pull-quotes from the library */}
+        <View className="mt-8">
+          <SectionLabel>KEY INSIGHTS</SectionLabel>
+          <SectionSubtitle>
+            What your saved knowledge collectively says
+          </SectionSubtitle>
+          <View className="px-5 gap-3">
+            {KEY_INSIGHTS.map((insight) => (
+              <KeyInsightCard
+                key={insight.id}
+                insight={insight.insight}
+                sources={insight.sources}
+                category={insight.category}
+                onExplore={() =>
+                  router.push(`/collection/${insight.collection}`)
+                }
+              />
+            ))}
+          </View>
+        </View>
+
+        {/* 5. What to do next — actions checklist */}
+        <View className="mt-8">
+          <SectionLabel>WHAT TO DO NEXT</SectionLabel>
+          <SectionSubtitle>Based on your startup knowledge</SectionSubtitle>
+          <WhatToDoNext actions={NEXT_ACTIONS} />
+        </View>
+
+        {/* 6. Continue Your Revisit — secondary, compact card */}
+        <View className="mt-8">
           <SectionLabel>CONTINUE YOUR REVISIT</SectionLabel>
           <View className="px-5">
             <RevisitCard
@@ -139,43 +192,16 @@ export default function HomeScreen() {
           </View>
         </View>
 
-        {/* 5. What You've Been Learning — insight card */}
-        <View className="mt-7">
-          <SectionLabel>WHAT YOU&apos;VE BEEN LEARNING</SectionLabel>
-          <View className="px-5">
-            <InsightCard
-              observation="You've saved 8 pieces about customer acquisition this month."
-              theme="Talk to users before building distribution."
-              onExplore={() => router.push("/collection/marketing")}
-            />
-          </View>
-        </View>
-
-        {/* 6. Emerging Focus — soft-background card */}
-        <View className="mt-7">
+        {/* 7. Emerging Focus — soft pastel card */}
+        <View className="mt-8">
           <SectionLabel>EMERGING FOCUS</SectionLabel>
           <View className="px-5">
             <EmergingFocusCard
               savesCount={8}
               topic="Marketing"
-              description="You're increasingly saving content about customer acquisition and growth. Track this as a goal?"
+              description="You've been saving a lot about customer acquisition — this looks like a new direction within your startup goal."
+              onExplore={() => router.push("/collection/marketing")}
             />
-          </View>
-        </View>
-
-        {/* 7. Worth Another Look — compact list */}
-        <View className="mt-7">
-          <SectionLabel>WORTH ANOTHER LOOK</SectionLabel>
-          <View className="px-5 gap-3">
-            {WORTH_ANOTHER_LOOK.map((item) => (
-              <WorthAnotherLookItem
-                key={item.id}
-                title={item.title}
-                savedAgo={item.savedAgo}
-                reason={item.reason}
-                onPress={() => router.push(`/post/${item.id}`)}
-              />
-            ))}
           </View>
         </View>
       </ScrollView>

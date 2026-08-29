@@ -7,6 +7,7 @@ export { RevisitCard } from "./revisit-card";
 export { EmergingFocusCard } from "./emerging-focus-card";
 export { SearchBar } from "./search-bar";
 export { CurrentFocusCard } from "./current-focus-card";
-export { InsightCard } from "./insight-card";
-export { WorthAnotherLookItem } from "./worth-another-look-item";
-
+export { KeyInsightCard } from "./key-insight-card";
+export type { KeyInsightCardProps } from "./key-insight-card";
+export { WhatToDoNext } from "./what-to-do-next";
+export type { ActionItem, WhatToDoNextProps } from "./what-to-do-next";

@@ -6,8 +6,12 @@ import Svg, { Defs, LinearGradient, Stop, Rect } from "react-native-svg";
 export type CurrentFocusCardProps = {
     /** The goal name, shown as the card's headline, e.g. "Build a startup". */
     goal: string;
-    savesThisWeek: number;
-    worthRevisiting: number;
+    /** Total saves collected toward this goal. */
+    saves: number;
+    /** AI-surfaced insights drawn from those saves. */
+    insights: number;
+    /** Suggested / tracked actions for this goal. */
+    actions: number;
     onViewGoal?: () => void;
 };
 
@@ -23,8 +27,9 @@ const TEXTURE_URI =
  */
 export function CurrentFocusCard({
     goal,
-    savesThisWeek,
-    worthRevisiting,
+    saves,
+    insights,
+    actions,
     onViewGoal,
 }: CurrentFocusCardProps) {
     return (
@@ -63,36 +68,28 @@ export function CurrentFocusCard({
             />
 
             {/* 4. Content */}
-            <View className="p-5">
-                <Text className="font-label text-label text-white/70 mb-1.5">
+            <View className="p-6">
+                <Text className="font-label text-label text-white/70 mb-2">
                     CURRENT GOAL
                 </Text>
-                <Text className="font-heading text-heading text-white mb-5">
+                <Text
+                    className="font-display text-white mb-4"
+                    style={{ fontSize: 30, lineHeight: 36, letterSpacing: -0.4 }}
+                >
                     {goal}
                 </Text>
 
-                {/* Stats */}
-                <View className="flex-row">
-                    <View className="flex-1">
-                        <Text className="font-display text-[26px] text-white">
-                            {savesThisWeek}
-                        </Text>
-                        <Text className="font-body text-[13px] text-white/70 mt-0.5">
-                            saves this week
-                        </Text>
-                    </View>
-                    <View className="flex-1">
-                        <Text className="font-display text-[26px] text-white">
-                            {worthRevisiting}
-                        </Text>
-                        <Text className="font-body text-[13px] text-white/70 mt-0.5">
-                            worth revisiting
-                        </Text>
-                    </View>
+                {/* Inline stat line: saves · insights · actions */}
+                <View className="flex-row items-center flex-wrap">
+                    <Stat value={saves} label="saves" />
+                    <Dot />
+                    <Stat value={insights} label="insights" />
+                    <Dot />
+                    <Stat value={actions} label="actions" />
                 </View>
 
                 {/* Action */}
-                <View className="flex-row justify-end mt-4">
+                <View className="flex-row justify-end mt-5">
                     <View className="flex-row items-center rounded-pill bg-white/15 px-3.5 py-2">
                         <Text className="font-semibold text-secondary text-white mr-1">
                             View goal
@@ -103,6 +100,21 @@ export function CurrentFocusCard({
             </View>
         </Pressable>
     );
+}
+
+/** A single inline stat, e.g. "24 saves". */
+function Stat({ value, label }: { value: number; label: string }) {
+    return (
+        <Text className="font-body text-[15px] text-white">
+            <Text className="font-display text-white">{value}</Text>
+            <Text className="text-white/75"> {label}</Text>
+        </Text>
+    );
+}
+
+/** The separating middot between inline stats. */
+function Dot() {
+    return <Text className="font-body text-[15px] text-white/50 px-2">·</Text>;
 }
 
 const styles = StyleSheet.create({
